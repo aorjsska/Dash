@@ -14,7 +14,7 @@ sidebar = dbc.Card([
         html.H2("Dashboard", className="display-6"),
         html.Hr(),
         html.P(
-            "Number of students per education level", className="lead"
+            "SW Test Results Visualization", className="lead",
         ),
         dbc.Nav(
             [
@@ -25,8 +25,8 @@ sidebar = dbc.Card([
             vertical=True,
             pills=True,
         ),
-    ])
-])
+    ]),
+], color="light", style={"height":"100vh", "width":"16rem","position":"fixed"})
 
 content = html.Div(id="page-content")
 
@@ -44,7 +44,7 @@ home_layout = dbc.Container([
             html.H2("Home page")
         ]
         )
-    ]
+    ], className="g-0"
     )
 ], fluid=True)
 
@@ -135,15 +135,28 @@ def switch_tab(tab_chosen):
             dbc.Row([
                 dbc.Col([
                     dbc.Tabs([
+                        dbc.Tab(tab_id="tab-overview", label="Overview", labelClassName="text-success font-weight-bold", activeLabelClassName="text-danger"),
                         dbc.Tab(tab_id="tab-10th", label="10th", labelClassName="text-success font-weight-bold", activeLabelClassName="text-danger"),
                         dbc.Tab(tab_id="tab-9th", label="9th", labelClassName="text-success font-weight-bold", activeLabelClassName="text-danger"),
                         dbc.Tab(tab_id="tab-8th", label="8th", labelClassName="text-success font-weight-bold", activeLabelClassName="text-danger"),
                         dbc.Tab(tab_id="tab-7th", label="7th", labelClassName="text-success font-weight-bold", activeLabelClassName="text-danger"),
                         dbc.Tab(tab_id="tab-6th", label="6th", labelClassName="text-success font-weight-bold", activeLabelClassName="text-danger"),
                         dbc.Tab(tab_id="tab-5th", label="5th", labelClassName="text-success font-weight-bold", activeLabelClassName="text-danger"),
-                    ], id="tabs2", active_tab="tab-10th")
+                    ], id="tabs2", active_tab="tab-overview"),
                 ])
-            ])
+            ], className="g-0"),
+            dbc.Row([
+                dbc.Col(dcc.Graph(figure=px.bar()), width=6),
+                dbc.Col(dcc.Graph(figure=px.bar()), width=6), 
+            ], className="g-0"),
+            dbc.Row([
+                dbc.Col(dcc.Graph(figure=px.bar()), width=6),
+                dbc.Col(dcc.Graph(figure=px.bar()), width=6),
+            ], className="g-0"),
+            dbc.Row([
+                dbc.Col(dcc.Graph(figure=px.bar()), width=6),
+                dbc.Col(dcc.Graph(figure=px.bar()), width=6),
+            ], className="g-0"),
         ], fluid=True)
     ]
 
