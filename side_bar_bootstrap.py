@@ -5,30 +5,13 @@ import pandas as pd
 
 df = pd.read_csv('https://raw.githubusercontent.com/Coding-with-Adam/Dash-by-Plotly/master/Bootstrap/Side-Bar/iranian_students.csv')
 
-app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = Dash(__name__)
+app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_callback_exceptions=True)
 # app = Dash(__name__, external_stylesheets=[dbc.themes.LUX])
-
-# styling the sidebar
-SIDEBAR_SYTLE = {
-    "position": "fixed",
-    "top": 0,
-    "left": 0,
-    "bottom": 0,
-    "width": "16rem",
-    "padding": "2rem 1rem",
-    "background-color": "#f8f9fa",
-}
-
-# padding for the page content
-CONTENT_STYLE ={
-    "margin-left": "18rem",
-    "margin-right": "2rem",
-    "padding": "2rem 1rem",
-}
 
 sidebar = dbc.Card([
     dbc.CardBody([
-        html.H2("Sidebar", className="display-4"),
+        html.H2("Dashboard", className="display-6"),
         html.Hr(),
         html.P(
             "Number of students per education level", className="lead"
@@ -36,26 +19,53 @@ sidebar = dbc.Card([
         dbc.Nav(
             [
                 dbc.NavLink("Home", href="/", active="exact"),
-                dbc.NavLink("Page-1", href="/page-1", active="exact"),
-                dbc.NavLink("Page-2", href="/page-2", active="exact"),
+                dbc.NavLink("Static Test", href="/statictest", active="exact"),
+                dbc.NavLink("Unit Test", href="/unittest", active="exact"),
             ],
             vertical=True,
             pills=True,
         ),
     ])
-], color="light", style={"hegith":"100vh",
-                         "width":"16rem",
-                         "position":"fixed"})
+])
 
-content = html.Div(id="page-content", style={"padding":"2rem"})
+content = html.Div(id="page-content")
 
 app.layout = dbc.Container([
     dcc.Location(id="url"),
     dbc.Row([
         dbc.Col(sidebar,width=2),
-        dbc.Col(content,width=9,style={"margin-left":"16rem"})
+        dbc.Col(content)
     ])
 ], fluid=True)
+
+home_layout = dbc.Container([
+    dbc.Row([
+        dbc.Col([
+            html.H2("Home page")
+        ]
+        )
+    ]
+    )
+], fluid=True)
+
+statictest_layout = dbc.Container([
+    dbc.Row([
+        dbc.Col([
+            dbc.Tabs([
+                dbc.Tab(id="tab-hdp", tab_id="tab-hdp", label="hdp", labelClassName="text-success font-weight-bold", activeLabelClassName="text-danger"),
+                dbc.Tab(id="tab-lv4", tab_id="tab-lv4", label="lv4", labelClassName="text-success font-weight-bold", activeLabelClassName="text-danger"),
+                dbc.Tab(id="tab-others", tab_id="tab-others", label="others", labelClassName="text-success font-weight-bold", activeLabelClassName="text-danger"),
+            ], id="tabs", active_tab="tab-hdp")
+        ])
+    ]),
+    dbc.Row([
+        dbc.Col([
+            html.Div(id="tab_div", children=[])
+        ])
+    ])
+], fluid=True)
+
+unittest_layout = html.Div(id="unit-test", children="unit test page")
 
 @app.callback(
     Output("page-content", "children"),
@@ -64,27 +74,30 @@ app.layout = dbc.Container([
 def render_page_content(pathname):
     if pathname == "/":
         return [
-                html.H1('Kindergarten in Iran',
-                        style={'textAlign':'center'}),
-                dcc.Graph(id='bargraph',
-                         figure=px.bar(df, barmode='group', x='Years',
-                         y=['Girls Kindergarten', 'Boys Kindergarten']))
+            home_layout
+                # html.H1('Kindergarten in Iran',
+                #         style={'textAlign':'center'}),
+                # dcc.Graph(id='bargraph',
+                #          figure=px.bar(df, barmode='group', x='Years',
+                #          y=['Girls Kindergarten', 'Boys Kindergarten']))
                 ]
-    elif pathname == "/page-1":
+    elif pathname == "/statictest":
         return [
-                html.H1('Grad School in Iran',
-                        style={'textAlign':'center'}),
-                dcc.Graph(id='bargraph',
-                         figure=px.bar(df, barmode='group', x='Years',
-                         y=['Girls Grade School', 'Boys Grade School']))
+            statictest_layout
+                # html.H1('Grad School in Iran',
+                #         style={'textAlign':'center'}),
+                # dcc.Graph(id='bargraph',
+                #          figure=px.bar(df, barmode='group', x='Years',
+                #          y=['Girls Grade School', 'Boys Grade School']))
                 ]
-    elif pathname == "/page-2":
+    elif pathname == "/unittest":
         return [
-                html.H1('High School in Iran',
-                        style={'textAlign':'center'}),
-                dcc.Graph(id='bargraph',
-                         figure=px.bar(df, barmode='group', x='Years',
-                         y=['Girls High School', 'Boys High School']))
+            unittest_layout
+                # html.H1('High School in Iran',
+                #         style={'textAlign':'center'}),
+                # dcc.Graph(id='bargraph',
+                #          figure=px.bar(df, barmode='group', x='Years',
+                #          y=['Girls High School', 'Boys High School']))
                 ]
     # If the user tries to reach a different page, return a 404 message
     return html.Div(
@@ -110,6 +123,30 @@ def render_page_content(pathname):
         ),
         className="p-3 bg-light rounded-3",
     )
+
+@app.callback(
+    Output(component_id="tab_div", component_property="children"),
+    [Input(component_id="tabs", component_property="active_tab")]
+)
+def switch_tab(tab_chosen):
+    return [
+        html.Br(),
+        dbc.Container([
+            dbc.Row([
+                dbc.Col([
+                    dbc.Tabs([
+                        dbc.Tab(tab_id="tab-10th", label="10th", labelClassName="text-success font-weight-bold", activeLabelClassName="text-danger"),
+                        dbc.Tab(tab_id="tab-9th", label="9th", labelClassName="text-success font-weight-bold", activeLabelClassName="text-danger"),
+                        dbc.Tab(tab_id="tab-8th", label="8th", labelClassName="text-success font-weight-bold", activeLabelClassName="text-danger"),
+                        dbc.Tab(tab_id="tab-7th", label="7th", labelClassName="text-success font-weight-bold", activeLabelClassName="text-danger"),
+                        dbc.Tab(tab_id="tab-6th", label="6th", labelClassName="text-success font-weight-bold", activeLabelClassName="text-danger"),
+                        dbc.Tab(tab_id="tab-5th", label="5th", labelClassName="text-success font-weight-bold", activeLabelClassName="text-danger"),
+                    ], id="tabs2", active_tab="tab-10th")
+                ])
+            ])
+        ], fluid=True)
+    ]
+
 
 
 if __name__=='__main__':
